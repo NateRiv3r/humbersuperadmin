@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800,900&display=swap");
+.transactionTable {
+  width: 100%;
+}
+.transactionTable table {
+  display: block;
+  background-color: white;
+}
+.transactionTable .noData {
+  padding: 30px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: gray;
+}
+.transactionTable thead {
+  background-color: #f2f2f2;
+  width: 100%;
+  display: block;
+  vertical-align: unset;
+}
+.transactionTable tbody {
+  width: 100%;
+  display: block;
+  vertical-align: unset;
+}
+.transactionTable tbody tr {
+  border-bottom: 1px solid #f7f7f7;
+}
+.transactionTable tbody tr:last-child {
+  border-bottom: none;
+}
+.transactionTable tr {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+.transactionTable th,
+.transactionTable td {
+  flex: 1;
+  font-size: 12px;
+  text-align: left;
+  padding-left: 20px;
+}
+.transactionTable .loading {
+  padding: 40px;
+  text-align: center;
+}
+.transactionTable .loading .lds-dual-ring {
+  border-color: rgba(101, 65, 164, 0.5);
+}
+
+/*# sourceMappingURL=transactionTable.css.map */

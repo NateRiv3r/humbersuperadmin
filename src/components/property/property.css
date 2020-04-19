@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800,900&display=swap");
+.SummaryCard {
+  margin-bottom: 15px;
+}
+.SummaryCard .card-main {
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+}
+.SummaryCard .card-main .card-content {
+  align-items: center;
+  padding: 0 15px;
+}
+.SummaryCard .card-main .card-content .summary-flex {
+  display: grid;
+  grid-template-columns: 5fr 2fr;
+}
+.SummaryCard .card-main .card-content .summary-flex span {
+  align-self: center;
+  position: relative;
+  top: 2px;
+  width: 25px;
+  display: block;
+}
+.SummaryCard .card-main .card-content .summary-flex span img {
+  width: 50px;
+  height: 50px;
+}
+.SummaryCard .card-main .card-content .summary-flex .stat-figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid #e6e6e6;
+  font-weight: bold;
+}
+.SummaryCard .card-main .card-content .card-stat-text {
+  margin-left: 40px;
+  padding: 30px 0;
+  font-weight: 600;
+  color: #666666;
+  font-size: 14px;
+}
+
+/*# sourceMappingURL=property.css.map */

@@ -1,0 +1,11 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800,900&display=swap");
+.dashboard .computes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1.5em;
+}
+.dashboard .contentCard {
+  padding: 20px;
+}
+
+/*# sourceMappingURL=dashboard.css.map */

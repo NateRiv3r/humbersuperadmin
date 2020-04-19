@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800,900&display=swap");
+.game-card {
+  height: 200px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+  display: flex;
+  border: 1px solid #f2f2f2;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.game-card:hover {
+  transform: scale(1.1);
+}
+.game-card .img-con {
+  width: 150px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-color: #f2f2f2;
+}
+.game-card .conMain {
+  padding: 20px;
+}
+.game-card .title {
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: bold;
+  color: #6541a4;
+}
+
+.singleGames .gridMain {
+  display: grid;
+  grid-template-columns: 6fr 2fr;
+  grid-gap: 2em;
+}
+.singleGames .contentCard {
+  padding: 20px;
+}
+
+.configs {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4d4d4d;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+/*# sourceMappingURL=winningRule.css.map */

@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800,900&display=swap");
+.activity-summary-card {
+  display: flex;
+  background-color: #e6e6e6;
+  border-radius: 20px;
+  margin-right: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  min-width: 300px;
+  align-items: center;
+}
+.activity-summary-card .img-con {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #cccccc;
+  width: 70px;
+  height: 70px;
+  margin-right: 20px;
+  border-radius: 10px;
+}
+.activity-summary-card .img-con img {
+  width: 40px;
+}
+.activity-summary-card h4,
+.activity-summary-card p {
+  margin: 0;
+  color: white;
+}
+.activity-summary-card h4 {
+  font-size: 14px;
+}
+.activity-summary-card p {
+  font-size: 16px;
+  font-weight: bold;
+}
+.activity-summary-card .divider {
+  margin: 10px 0;
+  background-color: white;
+  width: 100%;
+}
+.activity-summary-card.pink {
+  background-color: #ffe789;
+}
+.activity-summary-card.pink .img-con {
+  background-color: #ffeca2;
+}
+.activity-summary-card.blue {
+  background-color: #7048b6;
+}
+.activity-summary-card.blue .img-con {
+  background-color: #7e5abe;
+}
+.activity-summary-card.green {
+  background-color: #22a772;
+}
+.activity-summary-card.green .img-con {
+  background-color: #26bc80;
+}
+.activity-summary-card.yellow {
+  background-color: #d4a326;
+}
+.activity-summary-card.yellow .img-con {
+  background-color: #dbad38;
+}
+
+/*# sourceMappingURL=activitySummaryCard.css.map */

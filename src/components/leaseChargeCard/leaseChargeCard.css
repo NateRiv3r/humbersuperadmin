@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800,900&display=swap");
+.lease-charge-card {
+  padding: 15px;
+  background-color: #ffffff;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  min-height: 120px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.lease-charge-card .details .top h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.lease-charge-card .details .top p {
+  margin: 0;
+  font-size: 12px;
+}
+.lease-charge-card .details .party-detail {
+  margin: 0 10px;
+}
+.lease-charge-card .details .party-detail .tenant-con, .lease-charge-card .details .party-detail .landlord-con {
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+}
+.lease-charge-card .details .party-detail .tenant-con h4, .lease-charge-card .details .party-detail .tenant-con p, .lease-charge-card .details .party-detail .landlord-con h4, .lease-charge-card .details .party-detail .landlord-con p {
+  margin: 0;
+}
+.lease-charge-card .details .party-detail .tenant-con .tag, .lease-charge-card .details .party-detail .landlord-con .tag {
+  font-size: 9px;
+  color: #ff652d;
+}
+.lease-charge-card .details .party-detail .tenant-con h4, .lease-charge-card .details .party-detail .landlord-con h4 {
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.lease-charge-card .details .party-detail .tenant-con p, .lease-charge-card .details .party-detail .landlord-con p {
+  font-size: 12px;
+}
+.lease-charge-card .details .party-detail .tenant-con .content {
+  margin-left: 10px;
+}
+.lease-charge-card .details .party-detail .landlord-con .content {
+  margin-right: 10px;
+  text-align: right;
+}
+.lease-charge-card .details .party-detail .img-con {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.lease-charge-card .actions button {
+  min-width: 150px;
+}
+.lease-charge-card .actions .money {
+  font-size: 20px;
+  font-weight: 600;
+}
+.lease-charge-card .actions .money span {
+  color: #ff652d;
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=leaseChargeCard.css.map */

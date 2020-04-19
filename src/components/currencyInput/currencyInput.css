@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800,900&display=swap");
+.currency-input-field {
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.currency-input-field .select-input {
+  width: 90px;
+  min-width: 90px;
+}
+.currency-input-field .select-input.input-control {
+  width: 50px;
+  flex: unset;
+}
+.currency-input-field .select-input .input-field {
+  background-color: #8d6dc5;
+}
+.currency-input-field .input-field {
+  border-radius: 0;
+  border: none;
+}
+
+/*# sourceMappingURL=currencyInput.css.map */

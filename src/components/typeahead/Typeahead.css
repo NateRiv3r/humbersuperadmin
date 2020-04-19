@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800,900&display=swap");
+.react-autosuggest__suggestion--highlighted {
+  background: #6541a4 !important;
+}
+
+.Typeahead {
+  width: 100%;
+  text-transform: initial;
+  margin: 0 auto;
+}
+.Typeahead .typeahead-wrapper {
+  position: relative;
+}
+.Typeahead .typeahead-wrapper .inputbox-wrapper {
+  position: relative;
+  padding: 1px;
+}
+.Typeahead .typeahead-wrapper .inputbox-wrapper .icon-wrapper {
+  position: absolute;
+  top: 31%;
+  right: 10px;
+}
+.Typeahead .typeahead-wrapper input {
+  padding: 0 10px;
+  height: 50px;
+  border: none;
+  font-family: "Nunito Sans", sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.Typeahead .typeahead-wrapper .typeahead-options {
+  width: 100%;
+  margin-top: 0px;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+.Typeahead .typeahead-wrapper .typeahead-options ul {
+  list-style: none;
+  max-height: 300px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  margin: 0;
+  background: white;
+  padding: 0;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 2000;
+}
+.Typeahead .typeahead-wrapper .typeahead-options ul li {
+  background-color: white;
+  border-bottom: 1px solid #c7c7c7;
+  height: 40px;
+  box-sizing: border-box;
+}
+.Typeahead .typeahead-wrapper .typeahead-options ul li a {
+  padding: 0 10px;
+  height: 100%;
+  display: flex;
+  text-decoration: none;
+  color: black;
+  align-items: center;
+}
+.Typeahead .typeahead-wrapper .typeahead-options ul li a:focus {
+  background: gray;
+}
+.Typeahead .typeahead-wrapper .typeahead-options ul li:last-child {
+  border: none;
+}
+
+/*# sourceMappingURL=Typeahead.css.map */
