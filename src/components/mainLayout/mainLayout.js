@@ -3,19 +3,26 @@ import "./mainlayout.css";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/logo.jpg";
 import { Icon } from "../icons";
-import { addClass, hasClass, removeClass } from "../../utils/helper";
+import {
+  addClass,
+  checkExpiration,
+  hasClass,
+  removeClass,
+  updateExpiration
+} from "../../utils/helper";
 import { store } from "../../stateManagement/store";
-import { loginUrl, secondaryColor, USERTOKEN } from "../../utils/data";
+import { clientID, secondaryColor, USERTOKEN } from "../../utils/data";
 import { axiosHandler } from "../../utils/axiosHandler";
-import { GET_ACCESS_TOKEN, USER_ROLE } from "../../utils/urls";
 import { Spinner } from "../spinner/Spinner";
 import qs from "query-string";
-import { setRoles, setUserDetails } from "../../stateManagement/actions";
 import NotificationDrop from "../notificationDrop/notificationDrop";
+import { Notification } from "../notification/Notification";
+import { USER_ME_URL } from "../../utils/urls";
+import { setUserDetails } from "../../stateManagement/actions";
 
 function MainLayout(props) {
-  const { dispatch } = useContext(store);
   const {
+    dispatch,
     state: { pageTitle }
   } = useContext(store);
   const [loading, setLoading] = useState(true);
@@ -33,75 +40,48 @@ function MainLayout(props) {
 
   useEffect(() => {
     setTitle(pageTitle);
+    checkExpiration();
+    updateExpiration();
   }, [pageTitle]);
 
   useEffect(() => {
     // check token
-    let token = localStorage.getItem(USERTOKEN);
-    if (token) {
-      setLoading(false);
-    } else {
-      props.history.push("/login");
+    if (!checkExpiration()) {
+      Notification.bubble({
+        type: "info",
+        content: "You session has expired."
+      });
+      routeToLogin();
     }
+    let token = localStorage.getItem(USERTOKEN);
     // verify token
-    // if (token) {
-    //   axiosHandler("get", USER_ME, token.access).then(
-    //     res => {
-    //       setLoading(false);
-    //       setUpUserCookie(res.data);
-    //       const query = qs.parse(props.location.search);
-    //       if (query.refresh) {
-    //         delete query.refresh;
-    //         let newQuery = qs.stringify(query);
-    //         props.history.push(props.location.pathname + `?${newQuery}`);
-    //       }
-    //     },
-    //     _ => {
-    //       handleRefresh("logout");
-    //     }
-    //   );
-    // } else {
-    //   handleRefresh("logout");
-    // }
-  }, [props]);
-
-  const setUpUserCookie = user_data => {
-    dispatch({ type: setUserDetails, payload: user_data });
-    axiosHandler("get", USER_ROLE).then(res => {
-      dispatch({ type: setRoles, payload: res.data.results });
-    });
-  };
-
-  const handleRefresh = status => {
-    const query = qs.parse(props.location.search);
-    if (query.refresh) {
-      axiosHandler("post", GET_ACCESS_TOKEN, null, {
-        refresh: query.refresh
+    if (token) {
+      token = JSON.parse(token);
+      axiosHandler({
+        method: "get",
+        url: USER_ME_URL,
+        token: token.access,
+        clientID
       }).then(
         res => {
-          localStorage.setItem(
-            USERTOKEN,
-            JSON.stringify({ access: res.data.access, refresh: query.refresh })
+          dispatch({ type: setUserDetails, payload: res.data.data });
+          setLoading(false);
+          props.history.push(
+            props.location.pathname + `?${props.location.search}`
           );
-          delete query.refresh;
-          let newQuery = qs.stringify(query);
-          props.history.push(props.location.pathname + `?${newQuery}`);
         },
         _ => {
-          routeToLogin(status);
+          routeToLogin();
         }
       );
     } else {
-      routeToLogin(status);
+      routeToLogin();
     }
-  };
+  }, []);
 
-  const routeToLogin = status => {
-    let logout = status === "logout" ? "&notactive=true" : "";
+  const routeToLogin = () => {
     localStorage.clear();
-    // clear cookie
-    window.location.href =
-      loginUrl + `?redirect=${props.location.pathname}${logout}`;
+    props.history.push("/login");
   };
 
   if (loading) {
@@ -133,11 +113,11 @@ function MainLayout(props) {
               </div>
               <div className="pageTitle desktop">{title}</div>
             </div>
-            <div className="navRight">
-              <div className="notifier">
-                <NotificationDrop />
-              </div>
-            </div>
+            {/*<div className="navRight">*/}
+            {/*  <div className="notifier">*/}
+            {/*    <NotificationDrop />*/}
+            {/*  </div>*/}
+            {/*</div>*/}
           </div>
           <div className="children">
             {loading ? (
@@ -187,22 +167,28 @@ const SideBar = () => {
       <img src={logo} className="logo" alt="logo" />
       <div className="sideLinks">
         <SideLinks
-          link={"/"}
+          link={"/games"}
           title="Games"
-          active={getActive("/")}
-          icon={<Icon name="controller" type="entypo" />}
+          active={getActive("games")}
+          icon={<Icon name="thLarge" type="typicons" />}
         />
         <SideLinks
-          link={"/sandbox"}
-          title="Sandbox"
-          active={getActive("sandbox")}
-          icon={<Icon name="branch" type="entypo" />}
+          link={"/clients"}
+          title="Clients"
+          active={getActive("clients")}
+          icon={<Icon name="user" type="typicons" />}
         />
         <SideLinks
-          link={"settings"}
-          title="Settings"
-          active={getActive("settings")}
-          icon={<Icon name="cog" type="entypo" />}
+          link={"/licenses"}
+          title="Licenses"
+          active={getActive("licenses")}
+          icon={<Icon name="link" type="typicons" />}
+        />
+        <SideLinks
+          link={"/winning-rules"}
+          title="Winning Rules"
+          active={getActive("winning-rules")}
+          icon={<Icon name="inputCheckedOutline" type="typicons" />}
         />
         <SideLinks
           link={"/logout"}

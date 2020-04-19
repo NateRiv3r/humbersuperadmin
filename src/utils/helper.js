@@ -1,21 +1,40 @@
 import moment from "moment";
 import countryControl from "country-state-city";
 import _ from "lodash";
-import { USERTOKEN } from "./data";
-export const errorHandler = ({ graphQLErrors, networkError }) => {
+import {
+  momentFullDateFormat,
+  SESSION_EXPIRY,
+  USERTOKEN,
+  waitInterval
+} from "./data";
+export const errorHandler = (err, defaulted = false) => {
+  if (defaulted) {
+    return "Ops!, an error occurred.";
+  }
+
   let messageString = "";
-  if (graphQLErrors) {
-    graphQLErrors.map(({ message }, i) => {
-      messageString += `${message}<br />`;
-      return true;
-    });
-  }
-
-  if (networkError) {
+  if (!err.response) {
     messageString += "Network error! check your network and try again";
+  } else {
+    let data = err.response.data.results;
+    if (!err.response.data.results) {
+      data = err.response.data;
+    }
+    messageString = loopObj(data);
   }
-
   return messageString.replace(/{|}|'|\[|\]/g, "");
+};
+
+const loopObj = obj => {
+  let agg = "";
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      agg += `<div>${key}: ${
+        typeof obj[key] === "object" ? loopObj(obj[key]) : obj[key]
+      }</div>`;
+    }
+  }
+  return agg;
 };
 
 export const randomIDGenerator = length => {
@@ -141,17 +160,6 @@ export function numberWithCommas(n, separator = ",") {
   return `${num}${decimals.substring(0, 3)}`;
 }
 
-export function isDescendant(parent, child) {
-  let node = child.parentNode;
-  while (node != null) {
-    if (node === parent) {
-      return true;
-    }
-    node = node.parentNode;
-  }
-  return false;
-}
-
 export function hasSomeParentTheClass(element, className) {
   do {
     if (element.classList && element.classList.contains(className)) {
@@ -161,26 +169,6 @@ export function hasSomeParentTheClass(element, className) {
   } while (element);
   return false;
 }
-
-export const formatCurrency = num => {
-  return parseFloat(num).toFixed(2);
-};
-
-export function findAncestor(el, cls) {
-  while ((el = el.parentElement) && !el.classList.contains(cls)) {}
-  return el;
-}
-
-export const closeNav = _ => {
-  const el = document.querySelector(".mobile-dropdown");
-  if (hasClass(el, "navbar-fx-show")) {
-    removeClass(el, "navbar-fx-show");
-    document.querySelector("#faded-cover").style.display = "none";
-  }
-};
-
-export const normalize24hTime = time =>
-  moment(time, "hh:mm:ss").format("h:mm A");
 
 // function to check if an element has a class
 export const hasClass = (el, className) => {
@@ -266,6 +254,7 @@ export const getFullPhone = (code = "", number = "") => {
     return `+${numSplit.join("-")}`;
   }
 };
+
 export const getArrayCount = ({ count = 5, start = 1, includePlus = true }) => {
   const arrayData = [];
   for (let i = start; i < count; i++) {
@@ -284,9 +273,14 @@ export const getToken = _ => {
   }
   return null;
 };
-export const genericChangeSingle = (e, setter, current) => {
-  setter({ ...current, [e.target.name]: e.target.value });
+
+export const genericChangeSingle = (e, setter, current, isCurrency = false) => {
+  setter({
+    ...current,
+    [e.target.name]: isCurrency ? e.target.rawValue : e.target.value
+  });
 };
+
 export const genericChangeMulti = (e, setter, current) => {
   let newData = {};
   e.map(item => {
@@ -294,4 +288,27 @@ export const genericChangeMulti = (e, setter, current) => {
     return null;
   });
   setter({ ...current, ...newData });
+};
+
+export const checkExpiration = () => {
+  let activeExpiration = localStorage.getItem(SESSION_EXPIRY);
+  if (!activeExpiration) return false;
+  activeExpiration = moment(activeExpiration, momentFullDateFormat).diff(
+    moment(new Date()),
+    "seconds"
+  );
+  return activeExpiration >= 1;
+};
+
+export const updateExpiration = () => {
+  try {
+    let expiration = new Date().addHours(waitInterval);
+    expiration = moment(expiration).format(momentFullDateFormat);
+    localStorage.setItem(SESSION_EXPIRY, expiration);
+  } catch (e) {}
+};
+
+export const getExtractId = (link, pos) => {
+  let linkArray = link.split("/");
+  return linkArray[linkArray.length - pos];
 };

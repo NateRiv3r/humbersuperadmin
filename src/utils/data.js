@@ -1,14 +1,14 @@
-export const SITETITTLE = "Taskprox";
-export const USERTOKEN = "rr_token";
-export const USERDATA = "rr_user";
+export const SITETITTLE = "HumberGames";
+export const USERTOKEN = "hb_token";
+export const SESSION_EXPIRY = "hb_session_expiry";
 
-// cookies
-export const USERDETAILS = "USERDETAILS";
-export const USERROLE = "USERROLE";
-export const FrontEndUrl = "https://rfrontend.clubly.io";
+export const clientID = "default";
+export const waitInterval = 2; // this is the time the system can be idle before the user is logged out
 
-export const primaryColor = "#1CA0D7";
-export const secondaryColor = "#f18910";
+export const momentFullDateFormat = "YYYY-MM-DD H:m:s";
+
+export const primaryColor = "#6541a4";
+export const secondaryColor = "#ff683c";
 
 export const durationSelector = [
   { title: "yearly", value: "yearly" },
@@ -24,12 +24,39 @@ export const genderOptions = [
   { title: "prefer not to say", value: "prefer_not_to_say" }
 ];
 
-export const propertySortOptions = [
+export const gameTypeSort = [
   { title: "All", value: "" },
-  { title: "Date - newest", value: "desc" },
-  { title: "Date - oldest", value: "asc" },
-  { title: "Price - highest", value: "high" },
-  { title: "Price - lowest", value: "low" }
+  { title: "Number - type", value: "NUMBER" },
+  { title: "Raffle - type", value: "RAFFLE" },
+  { title: "Instant - mode", value: "INSTANT" },
+  { title: "Scheduled - mode", value: "SCHEDULED" }
+];
+
+export const gameTypeMainSort = [
+  { title: "Number", value: "0" },
+  { title: "Raffle", value: "1" }
+];
+
+export const ruleTypeMainSort = [
+  { title: "Any Match", value: "0" },
+  { title: "Sequence", value: "1" }
+];
+
+export const ruleTypeSort = [
+  { title: "All", value: "" },
+  { title: "Any Match", value: "ANY_MATCH" },
+  { title: "Sequence", value: "SEQUENCE" }
+];
+
+export const gameModeSort = [
+  { title: "Instant", value: "0" },
+  { title: "Scheduled", value: "1" }
+];
+
+export const timeSortOption = [
+  { title: "All", value: "" },
+  { title: "Newest first", value: "createdAt,asc" },
+  { title: "Oldest first", value: "createdAt,desc" }
 ];
 
 export const maritalStatusOption = [
@@ -103,8 +130,3 @@ export const inspectionSortOptions = [
   { title: "Completed", value: "completed" },
   { title: "Failed", value: "failed" }
 ];
-
-export const maxPercent = 10;
-export const minPercent = 5;
-export const rentrightPercent = 25;
-export const loginUrl = "https://rfrontend.clubly.io/login";

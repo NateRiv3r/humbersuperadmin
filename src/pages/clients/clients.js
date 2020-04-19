@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import "./games.css";
+import "./clients.css";
 import { store } from "../../stateManagement/store";
 import { setPageTitleAction } from "../../stateManagement/actions";
 import qs from "querystring";
@@ -14,16 +14,17 @@ import { Select } from "../../components/select/Select";
 import Input from "../../components/input/Input";
 import { clientID, gameTypeSort, timeSortOption } from "../../utils/data";
 import { axiosHandler } from "../../utils/axiosHandler";
-import { GAME_BASE_URL, GAME_LICENSE_URL, GAME_URL } from "../../utils/urls";
+import { CLIENT_FETCH_URL } from "../../utils/urls";
 import TransactionTable from "../../components/transactionTable/transactionTable";
 import { Button } from "../../components/button/Button";
 import ContentModal from "../../components/contentModal/contentModal";
-import NewGame from "./newGame";
+import NewClient from "./newClient";
 import { Notification } from "../../components/notification/Notification";
 import Pagination from "../../components/Pagination/pagination";
 import moment from "moment";
+import FormGroup from "../../components/formGroup/formGroup";
 
-function Games(props) {
+function Clients(props) {
   const { dispatch } = useContext(store);
   const [search, setSearch] = useState("");
   const [fetching, setFetching] = useState(true);
@@ -31,43 +32,33 @@ function Games(props) {
   const [modalState, setModalState] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [queryParams, setQueryParams] = useState({});
-  const [activeGame, setActiveGame] = useState(null);
+  const [activeClient, setActiveClient] = useState(null);
   const [pageInfo, setPageInfo] = useState(null);
-  const [games, setGames] = useState([]);
+  const [clients, setClients] = useState([]);
 
   useEffect(() => {
-    dispatch({ type: setPageTitleAction, payload: "Games" });
+    dispatch({ type: setPageTitleAction, payload: "Clients" });
   }, []);
 
   useEffect(() => {
-    let extra = `page=${currentPage - 1}`;
+    let extra = `page=${currentPage}`;
     extra += `&${qs.stringify(queryParams)}`;
-    getGames(extra);
+    getClients(extra);
   }, [search, queryParams, currentPage]);
 
-  const getGames = (extra = "") => {
+  const getClients = (extra = "") => {
     if (!fetching) {
       setFetching(true);
     }
-
-    let url = GAME_URL;
-    if (props.single) {
-      if (props.license) {
-        url = GAME_BASE_URL + `gameLicenses/${props.match.params.uuid}/game`;
-      } else if (props.winning) {
-        url = GAME_BASE_URL + `winningRules/${props.match.params.uuid}/game`;
-      }
-    }
-
     axiosHandler({
       method: "get",
       clientID,
       token: getToken(),
-      url: url + `?${extra}`
+      url: CLIENT_FETCH_URL + `?${extra}`
     }).then(
       res => {
-        setGames(res.data._embedded.games);
-        setPageInfo(res.data.page);
+        setClients(res.data.data);
+        // setPageInfo(res.data.page);
         setFetching(false);
       },
       err => {
@@ -80,68 +71,55 @@ function Games(props) {
   };
 
   const closeModal = () => {
-    getGames();
+    getClients();
     setModalShow(false);
   };
 
-  const formatGameList = () => {
+  const formatClientList = () => {
     const returnValue = [];
-    games.map(item => {
+    clients.map(item => {
       returnValue.push([
-        item.label,
-        item.type,
-        item.mode,
-        moment(new Date(item.updatedAt)).fromNow(),
+        item.name,
+        `${item.clientId.substring(0, 20)}${item.clientId.length > 20 &&
+          "..."}`,
+        `${item.secret.substring(0, 20)}${item.secret.length > 20 && "..."}`,
+        moment(new Date(item.createdAt)).fromNow(),
         <div>
           <span
             className="link"
             onClick={() => {
-              setActiveGame(item);
+              setActiveClient(item);
               setModalState(2);
               setModalShow(true);
             }}
           >
-            View configs
+            View info
           </span>
           , &nbsp;
           <span
             className="link"
             onClick={() => {
-              setActiveGame(item);
+              setActiveClient(item);
               setModalState(1);
               setModalShow(true);
             }}
           >
-            Update game
+            Update client
           </span>
-          , &nbsp;
-          <span
-            className="link"
-            onClick={() =>
-              props.history.push(
-                `/licenses/${getExtractId(
-                  item._links.gameLicenses.href,
-                  2
-                )}/game`
-              )
-            }
-          >
-            View licenses
-          </span>
-          , &nbsp;
-          <span
-            onClick={() =>
-              props.history.push(
-                `/winning-rules/${getExtractId(
-                  item._links.winningRules.href,
-                  2
-                )}`
-              )
-            }
-            className="link"
-          >
-            View winning rules
-          </span>
+          {/*, &nbsp;*/}
+          {/*<span*/}
+          {/*  className="link"*/}
+          {/*  onClick={() =>*/}
+          {/*    props.history.push(*/}
+          {/*      `/licenses/${getExtractId(*/}
+          {/*        item._links.gameLicenses.href,*/}
+          {/*        2*/}
+          {/*      )}/client`*/}
+          {/*    )*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  View licenses*/}
+          {/*</span>*/}
         </div>
       ]);
       return null;
@@ -149,17 +127,32 @@ function Games(props) {
     return returnValue;
   };
 
-  const tableHeadings = ["Label", "Type", "Mode", "Updated at", ""];
+  const tableHeadings = ["Name", "ClientId", "Secret", "Created at", ""];
+
+  const getMeta = metas => {
+    const returnValue = [];
+    for (let meta in metas) {
+      if (metas.hasOwnProperty(meta)) {
+        returnValue.push(
+          <div className="flex align-center">
+            <div className="info">{meta}:</div> &nbsp; &nbsp; &nbsp;
+            <div className="context">{metas[meta].toString()}</div>
+          </div>
+        );
+      }
+    }
+    return returnValue;
+  };
 
   return (
-    <div className="games">
+    <div className="clients">
       <br />
       <section className="search-section">
         <div className="flex justify-between">
           <div className="flex align-center flex-1">
             <div className="search-box">
               <Input
-                placeholder={"Search games..."}
+                placeholder={"Search clients..."}
                 iconLeft={<AppIcon name="search" type="feather" />}
                 debounce={true}
                 debounceTimeout={500}
@@ -171,40 +164,14 @@ function Games(props) {
             <Button
               onClick={() => {
                 setModalState(1);
-                setActiveGame(null);
+                setActiveClient(null);
                 setModalShow(true);
               }}
             >
-              Add Game
+              Add Client
             </Button>
           </div>
           <div className="filter-box flex ">
-            <Select
-              optionList={gameTypeSort}
-              placeholder="-- filter by --"
-              name="mode"
-              onChange={e => {
-                let data = {
-                  mode: e.target.value,
-                  type: null
-                };
-                if (
-                  e.target.value === "NUMBER" ||
-                  e.target.value === "RAFFLE"
-                ) {
-                  data = {
-                    type: e.target.value,
-                    mode: null
-                  };
-                } else if (!e.target.value) {
-                  data = {
-                    type: null,
-                    mode: null
-                  };
-                }
-                setQueryParams({ ...queryParams, ...data });
-              }}
-            />
             <Select
               optionList={timeSortOption}
               placeholder="-- soft by --"
@@ -218,33 +185,58 @@ function Games(props) {
       </section>
       <TransactionTable
         keys={tableHeadings}
-        values={formatGameList()}
+        values={formatClientList()}
         loading={fetching}
       />
-      {!fetching && games.length > 0 && (
-        <>
-          <br />
-          <Pagination
-            total={pageInfo.totalElements}
-            current={currentPage}
-            onChange={e => setCurrentPage(e)}
-          />
-        </>
-      )}
+      {/*{!fetching && clients.length > 0 && (*/}
+      {/*  <>*/}
+      {/*    <br />*/}
+      {/*    <Pagination*/}
+      {/*      total={pageInfo.totalElements}*/}
+      {/*      current={currentPage}*/}
+      {/*      onChange={e => setCurrentPage(e)}*/}
+      {/*    />*/}
+      {/*  </>*/}
+      {/*)}*/}
       <ContentModal visible={modalShow} setVisible={setModalShow}>
         {modalState === 1 && (
-          <NewGame closeModal={closeModal} activeGame={activeGame} />
+          <NewClient closeModal={closeModal} activeClient={activeClient} />
         )}
-        {modalState === 2 && activeGame && (
+        {modalState === 2 && activeClient && (
           <div className="gameInfo">
-            <h3>{activeGame.label}</h3>
+            <h4>Client Info</h4>
             <br />
-            <h4>Game Configs</h4>
-            <ul>
-              {activeGame.requiredGameConfig.map((item, id) => (
-                <li key={id}>{item}</li>
-              ))}
-            </ul>
+            <FormGroup>
+              <div className="info">Client Name</div>
+              <div className="context">{activeClient.name}</div>
+            </FormGroup>
+            <FormGroup>
+              <div className="info">ClientId</div>
+              <div className="context">{activeClient.clientId}</div>
+            </FormGroup>
+            <FormGroup>
+              <div className="info">Secret</div>
+              <div className="context">{activeClient.secret}</div>
+            </FormGroup>
+            <FormGroup>
+              <div className="info">UserId</div>
+              <div className="context">{activeClient.userId}</div>
+            </FormGroup>
+            <FormGroup>
+              <div className="info">Created At</div>
+              <div className="context">
+                {moment(new Date(activeClient.createdAt)).fromNow()}
+              </div>
+            </FormGroup>
+            <FormGroup>
+              <div className="info">Last Updated</div>
+              <div className="context">
+                {moment(new Date(activeClient.updatedAt)).fromNow()}
+              </div>
+            </FormGroup>
+            <br />
+            <h4>Other Meta</h4>
+            <ul>{getMeta(activeClient.meta)}</ul>
           </div>
         )}
       </ContentModal>
@@ -252,4 +244,4 @@ function Games(props) {
   );
 }
 
-export default Games;
+export default Clients;

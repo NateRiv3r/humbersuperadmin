@@ -1,16 +1,15 @@
 import React, { lazy, Suspense } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import MainLayout from "./components/mainLayout/mainLayout";
 import GlobalLoader from "./components/GlobalLoader/globalLoader";
 import Logout from "./components/logout/logout";
 import Login from "./pages/login/login";
 
 const Games = lazy(() => import("./pages/games/games"));
-const SingleGame = lazy(() => import("./pages/games/singleGame"));
-const GamePlay = lazy(() => import("./pages/games/gamePlays"));
-const SandBox = lazy(() => import("./pages/games/sandBox"));
+const Clients = lazy(() => import("./pages/clients/clients"));
+const WinningRules = lazy(() => import("./pages/winningRule/winningRule"));
+const Licenses = lazy(() => import("./pages/licence/license"));
 const Settings = lazy(() => import("./pages/settings/settings"));
-const CreateGame = lazy(() => import("./pages/createGame/createGame"));
 
 const RouterMain = props => {
   return (
@@ -24,8 +23,9 @@ const RouterMain = props => {
             path="/"
             component={props => (
               <MainLayout {...props}>
+                <Route path="/" exact render={() => <Redirect to="/games" />} />
                 <Route
-                  path="/"
+                  path="/games"
                   exact
                   component={props => (
                     <Suspense fallback={() => <h2>Loading...</h2>}>
@@ -34,38 +34,83 @@ const RouterMain = props => {
                   )}
                 />
                 <Route
-                  path="/games/:uuid/gameplays"
+                  path="/games/:uuid/license"
                   exact
                   component={props => (
                     <Suspense fallback={() => <h2>Loading...</h2>}>
-                      <SingleGame {...props} />
+                      <Games {...props} single license />
                     </Suspense>
                   )}
                 />
                 <Route
-                  path="/games/:uuid/create"
+                  path="/games/:uuid/winning-rule"
                   exact
                   component={props => (
                     <Suspense fallback={() => <h2>Loading...</h2>}>
-                      <CreateGame {...props} />
+                      <Games {...props} single winning />
                     </Suspense>
                   )}
                 />
                 <Route
-                  path="/games/:uuid"
+                  path="/clients"
                   exact
                   component={props => (
                     <Suspense fallback={() => <h2>Loading...</h2>}>
-                      <GamePlay {...props} />
+                      <Clients {...props} />
                     </Suspense>
                   )}
                 />
                 <Route
-                  path="/sandbox"
+                  path="/clients/:uuid"
                   exact
                   component={props => (
                     <Suspense fallback={() => <h2>Loading...</h2>}>
-                      <SandBox {...props} />
+                      <Clients {...props} single />
+                    </Suspense>
+                  )}
+                />
+                <Route
+                  path="/winning-rules"
+                  exact
+                  component={props => (
+                    <Suspense fallback={() => <h2>Loading...</h2>}>
+                      <WinningRules {...props} />
+                    </Suspense>
+                  )}
+                />
+                <Route
+                  path="/winning-rules/:uuid"
+                  exact
+                  component={props => (
+                    <Suspense fallback={() => <h2>Loading...</h2>}>
+                      <WinningRules {...props} single />
+                    </Suspense>
+                  )}
+                />
+                <Route
+                  path="/licenses"
+                  exact
+                  component={props => (
+                    <Suspense fallback={() => <h2>Loading...</h2>}>
+                      <Licenses {...props} />
+                    </Suspense>
+                  )}
+                />
+                <Route
+                  path="/licenses/:uuid/game"
+                  exact
+                  component={props => (
+                    <Suspense fallback={() => <h2>Loading...</h2>}>
+                      <Licenses {...props} single game />
+                    </Suspense>
+                  )}
+                />
+                <Route
+                  path="/licenses/:uuid/client"
+                  exact
+                  component={props => (
+                    <Suspense fallback={() => <h2>Loading...</h2>}>
+                      <Licenses {...props} single client />
                     </Suspense>
                   )}
                 />

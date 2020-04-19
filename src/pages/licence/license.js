@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import "./games.css";
+import "./license.css";
 import { store } from "../../stateManagement/store";
 import { setPageTitleAction } from "../../stateManagement/actions";
 import qs from "querystring";
@@ -8,22 +8,33 @@ import {
   errorHandler,
   genericChangeSingle,
   getExtractId,
-  getToken
+  getToken,
+  numberWithCommas
 } from "../../utils/helper";
 import { Select } from "../../components/select/Select";
 import Input from "../../components/input/Input";
-import { clientID, gameTypeSort, timeSortOption } from "../../utils/data";
+import {
+  clientID,
+  gameTypeSort,
+  momentFullDateFormat,
+  timeSortOption
+} from "../../utils/data";
 import { axiosHandler } from "../../utils/axiosHandler";
-import { GAME_BASE_URL, GAME_LICENSE_URL, GAME_URL } from "../../utils/urls";
+import {
+  GAME_BASE_URL,
+  GAME_LICENSE_URL,
+  GAME_URL,
+  WINNING_RULE_URL
+} from "../../utils/urls";
 import TransactionTable from "../../components/transactionTable/transactionTable";
 import { Button } from "../../components/button/Button";
 import ContentModal from "../../components/contentModal/contentModal";
-import NewGame from "./newGame";
+import NewLicense from "./newLicense";
 import { Notification } from "../../components/notification/Notification";
 import Pagination from "../../components/Pagination/pagination";
 import moment from "moment";
 
-function Games(props) {
+function License(props) {
   const { dispatch } = useContext(store);
   const [search, setSearch] = useState("");
   const [fetching, setFetching] = useState(true);
@@ -31,34 +42,30 @@ function Games(props) {
   const [modalState, setModalState] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [queryParams, setQueryParams] = useState({});
-  const [activeGame, setActiveGame] = useState(null);
+  const [activeLicense, setActiveLicense] = useState(null);
   const [pageInfo, setPageInfo] = useState(null);
-  const [games, setGames] = useState([]);
+  const [licenses, setLicenses] = useState([]);
 
   useEffect(() => {
-    dispatch({ type: setPageTitleAction, payload: "Games" });
+    dispatch({ type: setPageTitleAction, payload: "Licenses" });
   }, []);
 
   useEffect(() => {
     let extra = `page=${currentPage - 1}`;
     extra += `&${qs.stringify(queryParams)}`;
-    getGames(extra);
+    getLicenses(extra);
   }, [search, queryParams, currentPage]);
 
-  const getGames = (extra = "") => {
+  const getLicenses = (extra = "") => {
     if (!fetching) {
       setFetching(true);
     }
-
-    let url = GAME_URL;
+    let url = GAME_LICENSE_URL;
     if (props.single) {
-      if (props.license) {
-        url = GAME_BASE_URL + `gameLicenses/${props.match.params.uuid}/game`;
-      } else if (props.winning) {
-        url = GAME_BASE_URL + `winningRules/${props.match.params.uuid}/game`;
+      if (props.game) {
+        url = GAME_BASE_URL + `games/${props.match.params.uuid}/gameLicenses`;
       }
     }
-
     axiosHandler({
       method: "get",
       clientID,
@@ -66,7 +73,7 @@ function Games(props) {
       url: url + `?${extra}`
     }).then(
       res => {
-        setGames(res.data._embedded.games);
+        setLicenses(res.data._embedded.gameLicenses);
         setPageInfo(res.data.page);
         setFetching(false);
       },
@@ -80,67 +87,39 @@ function Games(props) {
   };
 
   const closeModal = () => {
-    getGames();
+    getLicenses();
     setModalShow(false);
   };
 
-  const formatGameList = () => {
+  const formatLicenseList = () => {
     const returnValue = [];
-    games.map(item => {
+    licenses.map(item => {
       returnValue.push([
-        item.label,
-        item.type,
-        item.mode,
+        numberWithCommas(item.licenseCost.toString()),
+        item.licenseCount,
+        moment(item.licenseExpiryDate, momentFullDateFormat).fromNow(),
         moment(new Date(item.updatedAt)).fromNow(),
         <div>
           <span
             className="link"
-            onClick={() => {
-              setActiveGame(item);
-              setModalState(2);
-              setModalShow(true);
-            }}
+            onClick={() =>
+              props.history.push(
+                `/games/${getExtractId(item._links.game.href, 2)}/license`
+              )
+            }
           >
-            View configs
+            View game
           </span>
           , &nbsp;
           <span
             className="link"
             onClick={() => {
-              setActiveGame(item);
+              setActiveLicense(item);
               setModalState(1);
               setModalShow(true);
             }}
           >
-            Update game
-          </span>
-          , &nbsp;
-          <span
-            className="link"
-            onClick={() =>
-              props.history.push(
-                `/licenses/${getExtractId(
-                  item._links.gameLicenses.href,
-                  2
-                )}/game`
-              )
-            }
-          >
-            View licenses
-          </span>
-          , &nbsp;
-          <span
-            onClick={() =>
-              props.history.push(
-                `/winning-rules/${getExtractId(
-                  item._links.winningRules.href,
-                  2
-                )}`
-              )
-            }
-            className="link"
-          >
-            View winning rules
+            Update license
           </span>
         </div>
       ]);
@@ -149,17 +128,23 @@ function Games(props) {
     return returnValue;
   };
 
-  const tableHeadings = ["Label", "Type", "Mode", "Updated at", ""];
+  const tableHeadings = [
+    "License cost",
+    "License count",
+    "License Expiration",
+    "Updated at",
+    ""
+  ];
 
   return (
-    <div className="games">
+    <div className="licenses">
       <br />
       <section className="search-section">
         <div className="flex justify-between">
           <div className="flex align-center flex-1">
             <div className="search-box">
               <Input
-                placeholder={"Search games..."}
+                placeholder={"Search winning rules..."}
                 iconLeft={<AppIcon name="search" type="feather" />}
                 debounce={true}
                 debounceTimeout={500}
@@ -171,40 +156,14 @@ function Games(props) {
             <Button
               onClick={() => {
                 setModalState(1);
-                setActiveGame(null);
+                setActiveLicense(null);
                 setModalShow(true);
               }}
             >
-              Add Game
+              Add License
             </Button>
           </div>
           <div className="filter-box flex ">
-            <Select
-              optionList={gameTypeSort}
-              placeholder="-- filter by --"
-              name="mode"
-              onChange={e => {
-                let data = {
-                  mode: e.target.value,
-                  type: null
-                };
-                if (
-                  e.target.value === "NUMBER" ||
-                  e.target.value === "RAFFLE"
-                ) {
-                  data = {
-                    type: e.target.value,
-                    mode: null
-                  };
-                } else if (!e.target.value) {
-                  data = {
-                    type: null,
-                    mode: null
-                  };
-                }
-                setQueryParams({ ...queryParams, ...data });
-              }}
-            />
             <Select
               optionList={timeSortOption}
               placeholder="-- soft by --"
@@ -218,10 +177,10 @@ function Games(props) {
       </section>
       <TransactionTable
         keys={tableHeadings}
-        values={formatGameList()}
+        values={formatLicenseList()}
         loading={fetching}
       />
-      {!fetching && games.length > 0 && (
+      {!fetching && licenses.length > 0 && pageInfo && (
         <>
           <br />
           <Pagination
@@ -233,15 +192,15 @@ function Games(props) {
       )}
       <ContentModal visible={modalShow} setVisible={setModalShow}>
         {modalState === 1 && (
-          <NewGame closeModal={closeModal} activeGame={activeGame} />
+          <NewLicense closeModal={closeModal} activeLicense={activeLicense} />
         )}
-        {modalState === 2 && activeGame && (
+        {modalState === 2 && activeLicense && (
           <div className="gameInfo">
-            <h3>{activeGame.label}</h3>
+            <h3>{activeLicense.label}</h3>
             <br />
             <h4>Game Configs</h4>
             <ul>
-              {activeGame.requiredGameConfig.map((item, id) => (
+              {activeLicense.requiredGameConfig.map((item, id) => (
                 <li key={id}>{item}</li>
               ))}
             </ul>
@@ -252,4 +211,4 @@ function Games(props) {
   );
 }
 
-export default Games;
+export default License;

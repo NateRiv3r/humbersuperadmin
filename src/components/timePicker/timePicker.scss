@@ -7,10 +7,9 @@
   .input-field{
     border: 1px solid darken(white, 10%);
     border-radius: 2px;
-    height: 40px;
+    height: 30px;
     overflow: hidden;
-    display: flex;
-    box-sizing: border-box;
+    display: inline-flex;
     padding: 0 10px;
     align-items: center;
     transition: .3s ease;

@@ -71,7 +71,6 @@ function DatePicker(props) {
   const [endValue, setEndValue] = useState(props.endDate || "");
   const [activeState, setActiveState] = useState(0);
   const [visibility, setVisibility] = useState(false);
-  const [id] = useState();
 
   const getRenderContext = () => {
     let returnValue = [];
@@ -90,19 +89,34 @@ function DatePicker(props) {
     let start = true;
     let tempArray = [];
 
+    const checkPast = val => {
+      let today = getToday().getDate();
+      let month = getToday().getMonth() + 1;
+      let year = getToday().getFullYear();
+
+      if (activeYear < year || activeMonth < month) return false;
+
+      if (activeYear <= year) {
+        if (activeMonth <= month) {
+          if (val <= today) return false;
+        }
+      }
+
+      return true;
+    };
+
     const checkDisabled = val => {
-      let status = true;
       if (props.rangePicker && activeState === 1) {
         let selected = startValue.split("-");
-        if (activeYear === parseInt(selected[selected.length - 1])) {
+        if (activeYear === parseInt(selected[0])) {
           if (activeMonth === parseInt(selected[1])) {
-            if (val <= parseInt(selected[0])) {
-              status = false;
+            if (val <= parseInt(selected[selected.length - 1])) {
+              return false;
             }
           }
         }
       }
-      return status;
+      return true;
     };
 
     for (let i = 1; i <= totalDaysInMonth; i++) {
@@ -112,13 +126,15 @@ function DatePicker(props) {
         if (start) start = false;
         tempArray.push(
           <div
+            key={"d" + i}
             onClick={() => {
+              if (props.disablePastDate && !checkPast(i)) return;
               if (!checkDisabled(i)) return;
               setDate(i);
             }}
             className={`weekDays ${getIsToday(i) ? "active" : ""} ${
               !checkDisabled(i) ? "disabled" : ""
-            }`}
+            } ${props.disablePastDate && !checkPast(i) ? "disabled" : ""}`}
           >
             {i}
           </div>
@@ -146,8 +162,8 @@ function DatePicker(props) {
         setVisibility(false);
         if (props.onChange) {
           props.onChange({
-            startData: startValue,
-            endDate: endValue,
+            startDate: startValue,
+            endDate: value,
             value: activeValue + value
           });
         }
@@ -268,7 +284,7 @@ function DatePicker(props) {
       returnValue.push(
         <div
           onClick={() => setMonth(i)}
-          key={i}
+          key={"m" + i}
           className={`weekDays ${getIsMonth(i) ? "active" : ""}`}
         >
           {item}
@@ -285,7 +301,7 @@ function DatePicker(props) {
       returnValue.push(
         <div
           onClick={() => setMonth(i)}
-          key={i}
+          key={"w" + i}
           className={`weekDays ${getIsMonth(i) ? "active" : ""}`}
         >
           {item}
@@ -307,7 +323,9 @@ function DatePicker(props) {
       let dropDown = document.getElementById("datepicker" + props.id);
       let inputField = document.getElementById("datepickerInput" + props.id);
       const inputBounds = inputField.getBoundingClientRect();
-      dropDown.style.left = `${inputBounds.x}px`;
+      dropDown.style.left = `${props.translated ? 0 : inputBounds.x}px`;
+      dropDown.style.position = `${props.translated ? "absolute" : "fixed"}`;
+
       const dropDownVPos =
         dropDown.getBoundingClientRect().height +
         inputBounds.top +
@@ -319,7 +337,7 @@ function DatePicker(props) {
           inputBounds.height -
           dropDown.getBoundingClientRect().height}px`;
       } else {
-        dropDown.style.top = `${inputBounds.top}px`;
+        dropDown.style.top = `${props.translated ? 0 : inputBounds.top}px`;
       }
     } catch (e) {}
   };
@@ -331,6 +349,7 @@ function DatePicker(props) {
       returnValue.push(
         <div
           onClick={() => setYear(i)}
+          key={"y" + i}
           className={`weekDays ${
             i === getToday().getFullYear() ? "active" : ""
           }`}
@@ -418,24 +437,16 @@ function DatePicker(props) {
         </div>
         <div className="body">
           {activeType === "date" && (
-            <div className="date-data">
-              {getRenderContext().map(item => item)}
-            </div>
+            <div className="date-data">{getRenderContext()}</div>
           )}
           {activeType === "month" && (
-            <div className="month-data">
-              {getRenderContextMonth().map(item => item)}
-            </div>
+            <div className="month-data">{getRenderContextMonth()}</div>
           )}
           {activeType === "week" && (
-            <div className="month-data">
-              {getRenderContextWeek().map(item => item)}
-            </div>
+            <div className="month-data">{getRenderContextWeek()}</div>
           )}
           {activeType === "year" && (
-            <div className="month-data">
-              {getRenderContextYear().map(item => item)}
-            </div>
+            <div className="month-data">{getRenderContextYear()}</div>
           )}
         </div>
       </div>
@@ -443,18 +454,22 @@ function DatePicker(props) {
   );
 }
 
-DatePicker.defaultProps = {
-  dateType: "date",
-  rangePicker: false
-};
-
 DatePicker.propType = {
   dateType: proptype.oneOf(["date", "month", "year", "week"]),
   rangePicker: proptype.bool,
   value: proptype.string,
   startDate: proptype.string,
   endDate: proptype.string,
-  onChange: proptype.func
+  onChange: proptype.func,
+  translated: proptype.bool,
+  translationWidth: proptype.number,
+  disablePastDate: proptype.bool
+};
+
+DatePicker.defaultProps = {
+  dateType: "date",
+  rangePicker: false,
+  translationWidth: window.innerWidth
 };
 
 export default DatePicker;

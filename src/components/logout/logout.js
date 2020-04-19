@@ -17,7 +17,7 @@ function Logout(props) {
   }, []);
 
   const logoutMain = () => {
-    localStorage.removeItem(USERTOKEN);
+    localStorage.clear();
     setTimeout(() => {
       dispatch({
         type: setGlobalLoader,

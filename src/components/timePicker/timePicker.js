@@ -8,7 +8,7 @@ import { getArrayCount } from "../../utils/helper";
 function TimePicker(props) {
   const [hour, setHour] = useState("");
   const [minute, setMinute] = useState("");
-  const [section, setSection] = useState("PM");
+  const [section, setSection] = useState("AM");
 
   useEffect(() => {
     if (hour && minute) {
@@ -16,7 +16,7 @@ function TimePicker(props) {
         props.onChange({
           target: {
             name: props.name || "",
-            value: formatTime()
+            value: formatTimeChange()
           }
         });
       }
@@ -27,6 +27,17 @@ function TimePicker(props) {
     return `${hour.length < 2 ? `0${hour}` : hour}:${
       minute.length < 2 ? `0${minute}` : minute
     } ${section}`;
+  };
+
+  const formatTimeChange = () => {
+    let newHour = parseInt(hour);
+    if (section === "PM") {
+      newHour = (12 + newHour).toString();
+    }
+
+    return `${newHour.length < 2 ? `0${newHour}` : newHour}:${
+      minute.length < 2 ? `0${minute}` : minute
+    }`;
   };
 
   const getHour = () => {
@@ -42,7 +53,7 @@ function TimePicker(props) {
   };
   const getMinute = () => {
     const retVal = [];
-    getArrayCount({ start: 1, count: 61, includePlus: false }).map(item => {
+    getArrayCount({ start: 0, count: 61, includePlus: false }).map(item => {
       retVal.push({
         title: item,
         value: item
