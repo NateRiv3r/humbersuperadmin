@@ -41,7 +41,7 @@ function Clients(props) {
   }, []);
 
   useEffect(() => {
-    let extra = `page=${currentPage}`;
+    let extra = `page=${currentPage}&limit=1`;
     extra += `&${qs.stringify(queryParams)}`;
     getClients(extra);
   }, [search, queryParams, currentPage]);
@@ -58,7 +58,7 @@ function Clients(props) {
     }).then(
       res => {
         setClients(res.data.data);
-        // setPageInfo(res.data.page);
+        setPageInfo({ total: res.data.total });
         setFetching(false);
       },
       err => {
@@ -106,20 +106,13 @@ function Clients(props) {
           >
             Update client
           </span>
-          {/*, &nbsp;*/}
-          {/*<span*/}
-          {/*  className="link"*/}
-          {/*  onClick={() =>*/}
-          {/*    props.history.push(*/}
-          {/*      `/licenses/${getExtractId(*/}
-          {/*        item._links.gameLicenses.href,*/}
-          {/*        2*/}
-          {/*      )}/client`*/}
-          {/*    )*/}
-          {/*  }*/}
-          {/*>*/}
-          {/*  View licenses*/}
-          {/*</span>*/}
+          , &nbsp;
+          <span
+            className="link"
+            onClick={() => props.history.push(`/licenses/${item.id}/client`)}
+          >
+            View licenses
+          </span>
         </div>
       ]);
       return null;
@@ -188,16 +181,16 @@ function Clients(props) {
         values={formatClientList()}
         loading={fetching}
       />
-      {/*{!fetching && clients.length > 0 && (*/}
-      {/*  <>*/}
-      {/*    <br />*/}
-      {/*    <Pagination*/}
-      {/*      total={pageInfo.totalElements}*/}
-      {/*      current={currentPage}*/}
-      {/*      onChange={e => setCurrentPage(e)}*/}
-      {/*    />*/}
-      {/*  </>*/}
-      {/*)}*/}
+      {!fetching && clients.length > 0 && pageInfo && (
+        <>
+          <br />
+          <Pagination
+            total={pageInfo.total}
+            current={currentPage}
+            onChange={e => setCurrentPage(e)}
+          />
+        </>
+      )}
       <ContentModal visible={modalShow} setVisible={setModalShow}>
         {modalState === 1 && (
           <NewClient closeModal={closeModal} activeClient={activeClient} />

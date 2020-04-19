@@ -66,7 +66,12 @@ function Games(props) {
       url: url + `?${extra}`
     }).then(
       res => {
-        setGames(res.data._embedded.games);
+        if (props.single) {
+          setGames([res.data]);
+        } else {
+          setGames(res.data._embedded.games);
+        }
+
         setPageInfo(res.data.page);
         setFetching(false);
       },
@@ -221,7 +226,7 @@ function Games(props) {
         values={formatGameList()}
         loading={fetching}
       />
-      {!fetching && games.length > 0 && (
+      {!fetching && games.length > 0 && pageInfo && (
         <>
           <br />
           <Pagination

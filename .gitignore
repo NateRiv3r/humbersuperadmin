@@ -241,7 +241,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-src/**/*.scss
 src/**/*.css.map
 
 .vscode

@@ -65,6 +65,9 @@ function License(props) {
       if (props.game) {
         url = GAME_BASE_URL + `games/${props.match.params.uuid}/gameLicenses`;
       }
+      if (props.client) {
+        extra += `&clientId=${props.match.params.uuid}`;
+      }
     }
     axiosHandler({
       method: "get",

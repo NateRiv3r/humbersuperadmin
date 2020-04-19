@@ -34,7 +34,7 @@ function NewWinningRule(props) {
       method: "get",
       clientID,
       token: getToken(),
-      url: GAME_URL
+      url: GAME_URL + "?type=NUMBER"
     }).then(
       res => {
         setGameList(res.data._embedded.games);
