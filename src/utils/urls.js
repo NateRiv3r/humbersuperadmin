@@ -1,4 +1,4 @@
-export const USER_BASE_URL = "http://api.humbergames.com/users/v1/";
+export const USER_BASE_URL = "https://api.humbergames.com/users/v1/";
 export const GAME_BASE_URL = "https://hgameservice.herokuapp.com/";
 
 export const LOGIN_URL = USER_BASE_URL + "auths/login";
