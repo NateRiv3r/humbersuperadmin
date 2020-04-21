@@ -10,7 +10,7 @@ import {
 import { clientID, countryCode } from "../../utils/data";
 import { Button } from "../../components/button/Button";
 import { axiosHandler } from "../../utils/axiosHandler";
-import { CLIENT_CREATE_URL, USER_URL } from "../../utils/urls";
+import { CLIENT_CREATE_URL, ROLES_URL, USER_URL } from "../../utils/urls";
 import { Notification } from "../../components/notification/Notification";
 import SelectInput from "../../components/selectInput/selectInput";
 
@@ -19,10 +19,10 @@ function NewClient(props) {
     name: props.activeClient ? props.activeClient.name : ""
   });
   const [userData, setUserData] = useState({
-    password: "password",
-    roleId: "5e77afe9930eb300171a7103"
+    password: "password"
   });
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
   const onSubmit = e => {
     e.preventDefault();
@@ -62,6 +62,31 @@ function NewClient(props) {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    axiosHandler({
+      method: "get",
+      url: ROLES_URL,
+      token: getToken(),
+      clientID
+    }).then(res => {
+      setUserData({
+        ...userData,
+        roleId: res.data.data.filter(
+          item => item.name.toLowerCase() === "admin"
+        )[0].id
+      });
+      setFetching(false);
+    });
+  }, []);
+
+  if (fetching) {
+    return (
+      <h3>
+        <i>Fetching user roles...</i>
+      </h3>
+    );
+  }
 
   return (
     <div>
