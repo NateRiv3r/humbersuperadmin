@@ -113,17 +113,6 @@ function License(props) {
           >
             View game
           </span>
-          , &nbsp;
-          <span
-            className="link"
-            onClick={() => {
-              setActiveLicense(item);
-              setModalState(1);
-              setModalShow(true);
-            }}
-          >
-            Update license
-          </span>
         </div>
       ]);
       return null;

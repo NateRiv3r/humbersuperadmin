@@ -95,18 +95,7 @@ function Clients(props) {
           >
             View info
           </span>
-          , &nbsp;
-          <span
-            className="link"
-            onClick={() => {
-              setActiveClient(item);
-              setModalState(1);
-              setModalShow(true);
-            }}
-          >
-            Update client
-          </span>
-          , &nbsp;
+          &nbsp; | &nbsp;
           <span
             className="link"
             onClick={() => props.history.push(`/licenses/${item.id}/client`)}

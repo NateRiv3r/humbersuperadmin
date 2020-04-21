@@ -105,17 +105,6 @@ function WinningRule(props) {
           >
             View Game
           </span>
-          , &nbsp;
-          <span
-            className="link"
-            onClick={() => {
-              setActiveWinningRule(item);
-              setModalState(1);
-              setModalShow(true);
-            }}
-          >
-            Update Rule
-          </span>
         </div>
       ]);
       return null;

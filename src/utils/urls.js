@@ -5,6 +5,7 @@ export const LOGIN_URL = USER_BASE_URL + "auths/login";
 export const FILE_UPLOAD_URL = USER_BASE_URL + "auths/login";
 export const NOTIFICATIONS_URL = USER_BASE_URL + "auths/login";
 export const USER_ME_URL = USER_BASE_URL + "auths/me";
+export const USER_URL = USER_BASE_URL + "users";
 export const tempToken = "";
 export const GAME_URL = GAME_BASE_URL + "games";
 export const CLIENT_CREATE_URL = USER_BASE_URL + "clients/create";

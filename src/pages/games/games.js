@@ -108,18 +108,7 @@ function Games(props) {
           >
             View configs
           </span>
-          , &nbsp;
-          <span
-            className="link"
-            onClick={() => {
-              setActiveGame(item);
-              setModalState(1);
-              setModalShow(true);
-            }}
-          >
-            Update game
-          </span>
-          , &nbsp;
+          &nbsp; | &nbsp;
           <span
             className="link"
             onClick={() =>
@@ -133,7 +122,7 @@ function Games(props) {
           >
             View licenses
           </span>
-          , &nbsp;
+          &nbsp; | &nbsp;
           <span
             onClick={() =>
               props.history.push(
