@@ -69,7 +69,8 @@ function Login(props) {
           <img src={logo} alt="" />
           <h3>Sign In</h3>
         </center>
-
+        <br />
+        <br />
         <FormGroup label="Email">
           <Input
             placeholder={"Enter your email"}

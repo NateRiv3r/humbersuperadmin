@@ -14,8 +14,6 @@ import { store } from "../../stateManagement/store";
 import { clientID, secondaryColor, USERTOKEN } from "../../utils/data";
 import { axiosHandler } from "../../utils/axiosHandler";
 import { Spinner } from "../spinner/Spinner";
-import qs from "query-string";
-import NotificationDrop from "../notificationDrop/notificationDrop";
 import { Notification } from "../notification/Notification";
 import { USER_ME_URL } from "../../utils/urls";
 import { setUserDetails } from "../../stateManagement/actions";
