@@ -29,6 +29,13 @@
   color: #6541a4;
 }
 
+.config-item {
+  position: relative;
+}
+.config-item .close {
+  position: absolute !important;
+}
+
 .singleGames .gridMain {
   display: grid;
   grid-template-columns: 6fr 2fr;

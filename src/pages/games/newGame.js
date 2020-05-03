@@ -9,6 +9,7 @@ import {
 import { Select } from "../../components/select/Select";
 import {
   clientID,
+  defaultConfigs,
   gameModeSort,
   gameTypeMainSort,
   secondaryColor
@@ -30,9 +31,7 @@ function NewGame(props) {
       : {}
   );
   const [gameConfigs, setGameConfigs] = useState(
-    props.activeGame
-      ? props.activeGame.requiredGameConfig
-      : ["combo_size", "range_min", "range_max"]
+    props.activeGame ? props.activeGame.requiredGameConfig : defaultConfigs
   );
   const [loading, setLoading] = useState(false);
 
@@ -81,24 +80,12 @@ function NewGame(props) {
     );
   };
 
-  const getGameConfigs = () => {
-    const itemList = [];
-    for (let i = 0; i < gameConfigs.length - 1; i++) {
-      itemList.push(
-        <div key={i} className="flex align-center justify-between configs">
-          <div>{gameConfigs[i]}</div>
-          <div onClick={() => removeConfig(i)}>
-            <AppIcon
-              name="x"
-              type="feather"
-              style={{ color: secondaryColor }}
-            />{" "}
-          </div>
-        </div>
-      );
-    }
-    return itemList;
+  const getActiveGameOption = (list, value) => {
+    if (!value) return {};
+    let item = list.filter(item => item.value === value);
+    return item[0];
   };
+
   return (
     <div>
       <br />
@@ -119,13 +106,10 @@ function NewGame(props) {
               <Select
                 optionList={gameTypeMainSort}
                 name="type"
-                defaultOption={
-                  props.activeGame
-                    ? gameData.type && gameData.type.toLowerCase() === "number"
-                      ? gameTypeMainSort[0]
-                      : gameTypeMainSort[1]
-                    : null
-                }
+                defaultOption={getActiveGameOption(
+                  gameTypeMainSort,
+                  gameData.type
+                )}
                 onChange={e => genericChangeSingle(e, setGameData, gameData)}
                 placeholder="--choose game type--"
               />
@@ -151,14 +135,26 @@ function NewGame(props) {
           <br />
           <h4>Set required game config</h4>
           <br />
-          {gameConfigs.length > 1 && getGameConfigs()}
-          <br />
-          <FormGroup label="Config name">
-            <Input
-              value={gameConfigs[gameConfigs.length - 1]}
-              onChange={e => changeConfig(e, gameConfigs.length - 1)}
-            />
-          </FormGroup>
+          {gameConfigs.map((item, key) => {
+            return (
+              <div className="config-item">
+                <FormGroup key={key}>
+                  <Input
+                    value={item}
+                    placeholder="enter config name"
+                    onChange={e => changeConfig(e, key)}
+                  />
+                </FormGroup>
+                <div className="close" onClick={() => removeConfig(key)}>
+                  <AppIcon
+                    name="x"
+                    type="feather"
+                    style={{ color: secondaryColor }}
+                  />{" "}
+                </div>
+              </div>
+            );
+          })}
           <div className="flex justify-end">
             <div
               className="link"

@@ -34,7 +34,16 @@ export const gameTypeSort = [
 
 export const gameTypeMainSort = [
   { title: "Number", value: "0" },
-  { title: "Raffle", value: "1" }
+  { title: "Raffle", value: "1" },
+  { title: "Instant Draw", value: "2" }
+];
+
+export const defaultConfigs = [
+  "combo_size",
+  "range_min",
+  "range_max",
+  "chances",
+  "outcomes"
 ];
 
 export const ruleTypeMainSort = [
